@@ -96,7 +96,8 @@ def equipo_list(request):
 @login_required
 def equipo_detail(request, pk):
     equipo = get_object_or_404(Equipo, pk=pk)
-    if not equipo.qr_code:
+    # Si el QR no está en BD o si el archivo físico se borró (ej. Render efímero)
+    if not equipo.qr_code or not equipo.qr_code.storage.exists(equipo.qr_code.name):
         actualizar_qr(equipo, _base_url(request))
     context = _contexto_panel(request, {'equipo': equipo})
     return render(request, 'parque/equipo_detail.html', context)
