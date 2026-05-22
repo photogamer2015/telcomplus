@@ -1,0 +1,55 @@
+{% extends 'parque/base.html' %}
+
+{% block title %}Equipos | Telcomplus QR{% endblock %}
+
+{% block content %}
+<header class="page-header">
+  <div>
+    <p class="eyebrow">Inventario</p>
+    <h1>Equipos y QR</h1>
+  </div>
+  {% if puede_editar_equipos %}
+    <a class="primary-button" href="{% url 'equipo_create' %}">Crear equipo</a>
+  {% endif %}
+</header>
+
+<form class="filter-bar" method="get">
+  <input type="search" name="q" value="{{ query }}" placeholder="Buscar por serie, marca, cliente o ciudad">
+  <select name="tipo">
+    <option value="">Todos los tipos</option>
+    {% for value, label in tipos %}
+      <option value="{{ value }}" {% if tipo == value %}selected{% endif %}>{{ label }}</option>
+    {% endfor %}
+  </select>
+  <button class="secondary-button" type="submit">Filtrar</button>
+</form>
+
+<div class="table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th>Tipo</th>
+        <th>Equipo</th>
+        <th>Serie</th>
+        <th>Cliente</th>
+        <th>Ciudad</th>
+        <th>QR</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for equipo in equipos %}
+        <tr>
+          <td><span class="pill">{{ equipo.get_tipo_display }}</span></td>
+          <td><a href="{% url 'equipo_detail' equipo.pk %}">{{ equipo.marca }} {{ equipo.modelo }}</a></td>
+          <td>{{ equipo.serie }}</td>
+          <td>{{ equipo.razon_social_cliente }}</td>
+          <td>{{ equipo.ciudad }}</td>
+          <td><a href="{% url 'equipo_qr_download' equipo.pk %}">Descargar</a></td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="6" class="empty">No hay equipos con ese filtro.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

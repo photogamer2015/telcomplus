@@ -1,0 +1,8 @@
+Django==6.0.4
+dj-database-url==3.0.1
+gunicorn==23.0.0
+openpyxl==3.1.5
+Pillow==12.1.1
+psycopg2-binary==2.9.11
+qrcode==8.2
+whitenoise[brotli]==6.11.0

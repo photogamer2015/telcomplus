@@ -1,0 +1,27 @@
+{% extends 'parque/base.html' %}
+{% load static %}
+
+{% block title %}Ingresar | Telcomplus QR{% endblock %}
+
+{% block content %}
+<section class="login-layout">
+  <div class="login-panel">
+    <img class="login-logo" src="{% static 'parque/logo.jpeg' %}" alt="Telcomplus">
+    <h1>Control de parque y QR</h1>
+    <p>Acceso interno para admin, tecnico y admin de contrato.</p>
+    <form method="post" class="form-stack">
+      {% csrf_token %}
+      {{ form.non_field_errors }}
+      <label>Usuario {{ form.username }}</label>
+      <label>Clave {{ form.password }}</label>
+      <button class="primary-button" type="submit">Ingresar</button>
+    </form>
+    <div class="demo-users">
+      <strong>Usuarios demo</strong>
+      <span>admin / admin123</span>
+      <span>tecnico / tecnico123</span>
+      <span>contrato / contrato123</span>
+    </div>
+  </div>
+</section>
+{% endblock %}

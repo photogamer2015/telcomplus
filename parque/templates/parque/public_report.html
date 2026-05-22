@@ -1,0 +1,37 @@
+{% extends 'parque/base.html' %}
+{% load static %}
+
+{% block title %}Reportar equipo | Telcomplus{% endblock %}
+
+{% block content %}
+<section class="public-page">
+  <img class="public-logo" src="{% static 'parque/logo.jpeg' %}" alt="Telcomplus">
+  <div class="public-grid">
+    <aside class="panel equipment-summary">
+      <p class="eyebrow">Equipo identificado por QR</p>
+      <h1>{{ equipo.get_tipo_display }} {{ equipo.marca }} {{ equipo.modelo }}</h1>
+      <dl class="detail-list">
+        <div><dt>Serie</dt><dd>{{ equipo.serie }}</dd></div>
+        <div><dt>Cliente registrado</dt><dd>{{ equipo.razon_social_cliente }}</dd></div>
+        <div><dt>Empresa de atencion</dt><dd>{{ equipo.empresa_atencion }}</dd></div>
+        <div><dt>Ciudad</dt><dd>{{ equipo.ciudad }}</dd></div>
+        <div><dt>Area</dt><dd>{{ equipo.area_departamento }}</dd></div>
+      </dl>
+    </aside>
+    <form method="post" class="panel form-stack report-form">
+      {% csrf_token %}
+      <h2>Reportar problema</h2>
+      <p>Complete sus datos y describa la novedad. No necesita usuario ni clave.</p>
+      {{ form.non_field_errors }}
+      {% for field in form %}
+        <label>
+          {{ field.label }}
+          {{ field }}
+          {{ field.errors }}
+        </label>
+      {% endfor %}
+      <button class="primary-button" type="submit">Enviar reporte</button>
+    </form>
+  </div>
+</section>
+{% endblock %}

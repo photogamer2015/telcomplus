@@ -1,0 +1,15 @@
+{% extends 'parque/base.html' %}
+{% load static %}
+
+{% block title %}Reporte enviado | Telcomplus{% endblock %}
+
+{% block content %}
+<section class="public-page">
+  <img class="public-logo" src="{% static 'parque/logo.jpeg' %}" alt="Telcomplus">
+  <div class="success-card">
+    <p class="eyebrow">Reporte enviado</p>
+    <h1>Ticket #{{ ticket.pk }} recibido</h1>
+    <p>El equipo {{ equipo.marca }} {{ equipo.modelo }} con serie {{ equipo.serie }} quedo asociado automaticamente al reporte.</p>
+  </div>
+</section>
+{% endblock %}

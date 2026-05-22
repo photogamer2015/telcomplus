@@ -1,0 +1,28 @@
+{% extends 'parque/base.html' %}
+
+{% block title %}{{ titulo }} | Telcomplus QR{% endblock %}
+
+{% block content %}
+<header class="page-header">
+  <div>
+    <p class="eyebrow">Inventario</p>
+    <h1>{{ titulo }}</h1>
+  </div>
+</header>
+
+<form method="post" class="panel form-grid">
+  {% csrf_token %}
+  {{ form.non_field_errors }}
+  {% for field in form %}
+    <label class="{% if field.name == 'direccion' or field.name == 'ubicacion_coordenadas' %}span-2{% endif %}">
+      {{ field.label }}
+      {{ field }}
+      {{ field.errors }}
+    </label>
+  {% endfor %}
+  <div class="form-actions span-2">
+    <a class="secondary-button" href="{% url 'equipo_list' %}">Cancelar</a>
+    <button class="primary-button" type="submit">Guardar y generar QR</button>
+  </div>
+</form>
+{% endblock %}

@@ -1,0 +1,22 @@
+databases:
+  - name: telcomplus-qr-db
+    plan: free
+    databaseName: telcomplus_qr
+    user: telcomplus_qr
+
+services:
+  - type: web
+    plan: free
+    name: telcomplus-qr-demo
+    runtime: python
+    buildCommand: './build.sh'
+    startCommand: './start.sh'
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: telcomplus-qr-db
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+      - key: WEB_CONCURRENCY
+        value: 2

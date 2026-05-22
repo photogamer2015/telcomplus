@@ -1,0 +1,40 @@
+{% extends 'parque/base.html' %}
+
+{% block title %}{{ equipo.serie }} | Telcomplus QR{% endblock %}
+
+{% block content %}
+<header class="page-header">
+  <div>
+    <p class="eyebrow">{{ equipo.get_tipo_display }}</p>
+    <h1>{{ equipo.marca }} {{ equipo.modelo }}</h1>
+  </div>
+  <div class="button-row">
+    {% if puede_editar_equipos %}
+      <a class="secondary-button" href="{% url 'equipo_update' equipo.pk %}">Editar</a>
+    {% endif %}
+    <a class="primary-button" href="{% url 'equipo_qr_download' equipo.pk %}">Descargar QR</a>
+  </div>
+</header>
+
+<section class="detail-layout">
+  <div class="panel">
+    <h2>Datos precargados del equipo</h2>
+    <dl class="detail-list">
+      <div><dt>Serie</dt><dd>{{ equipo.serie }}</dd></div>
+      <div><dt>Empresa de atencion</dt><dd>{{ equipo.empresa_atencion }}</dd></div>
+      <div><dt>Cliente</dt><dd>{{ equipo.razon_social_cliente }}</dd></div>
+      <div><dt>Provincia / ciudad</dt><dd>{{ equipo.provincia }} / {{ equipo.ciudad }}</dd></div>
+      <div><dt>Direccion</dt><dd>{{ equipo.direccion }}</dd></div>
+      <div><dt>Area</dt><dd>{{ equipo.area_departamento }}</dd></div>
+      <div><dt>Ubicacion</dt><dd><a href="{{ equipo.ubicacion_coordenadas }}" target="_blank">{{ equipo.ubicacion_coordenadas }}</a></dd></div>
+    </dl>
+  </div>
+  <aside class="panel qr-panel">
+    {% if equipo.qr_code %}
+      <img src="{{ equipo.qr_code.url }}" alt="QR {{ equipo.serie }}">
+    {% endif %}
+    <p>Este QR abre el formulario publico del equipo sin login.</p>
+    <a href="{{ equipo.public_path }}" target="_blank">Abrir formulario publico</a>
+  </aside>
+</section>
+{% endblock %}

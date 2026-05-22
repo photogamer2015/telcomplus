@@ -1,0 +1,56 @@
+{% extends 'parque/base.html' %}
+
+{% block title %}Panel | Telcomplus QR{% endblock %}
+
+{% block content %}
+<header class="page-header">
+  <div>
+    <p class="eyebrow">Demo operativo</p>
+    <h1>Panel de parque tecnologico</h1>
+  </div>
+  {% if puede_editar_equipos %}
+    <a class="primary-button" href="{% url 'equipo_create' %}">Crear equipo y QR</a>
+  {% endif %}
+</header>
+
+<section class="metrics-grid">
+  <article class="metric">
+    <span>Equipos registrados</span>
+    <strong>{{ total_equipos }}</strong>
+  </article>
+  <article class="metric">
+    <span>Reportes recibidos</span>
+    <strong>{{ total_tickets }}</strong>
+  </article>
+  <article class="metric">
+    <span>Pendientes nuevos</span>
+    <strong>{{ tickets_nuevos }}</strong>
+  </article>
+</section>
+
+<section class="two-columns">
+  <div class="panel">
+    <h2>Equipos por categoria</h2>
+    <div class="list-lines">
+      {% for item in equipos_por_tipo %}
+        <div><span>{{ item.tipo }}</span><strong>{{ item.total }}</strong></div>
+      {% empty %}
+        <p class="empty">Sin equipos cargados.</p>
+      {% endfor %}
+    </div>
+  </div>
+  <div class="panel">
+    <h2>Ultimos reportes</h2>
+    <div class="list-lines">
+      {% for ticket in ultimos_tickets %}
+        <a href="{% url 'ticket_detail' ticket.pk %}">
+          <span>{{ ticket.nombre_cliente }} - {{ ticket.equipo.serie }}</span>
+          <strong>{{ ticket.get_estado_display }}</strong>
+        </a>
+      {% empty %}
+        <p class="empty">Todavia no hay reportes.</p>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}
