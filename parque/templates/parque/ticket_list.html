@@ -30,6 +30,7 @@
         <th>Equipo</th>
         <th>Estado</th>
         <th>Fecha</th>
+        <th>Acciones</th>
       </tr>
     </thead>
     <tbody>
@@ -55,6 +56,14 @@
             {% endif %}
           </td>
           <td>{{ ticket.creado_en|date:'d/m/Y H:i' }}</td>
+          <td>
+            <div style="display: flex; gap: 8px; align-items: center;">
+              <a href="{% url 'ticket_detail' ticket.pk %}" style="color: var(--text-primary); font-size: 13px;">Ver</a>
+              {% if puede_eliminar %}
+                <a href="{% url 'ticket_delete' ticket.pk %}" style="color: var(--accent-danger); font-size: 13px;">Eliminar</a>
+              {% endif %}
+            </div>
+          </td>
         </tr>
       {% empty %}
         <tr><td colspan="6" class="empty">No hay reportes.</td></tr>

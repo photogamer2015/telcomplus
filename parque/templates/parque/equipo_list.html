@@ -33,7 +33,7 @@
         <th>Serie</th>
         <th>Cliente</th>
         <th>Ciudad</th>
-        <th>QR</th>
+        <th>Acciones</th>
       </tr>
     </thead>
     <tbody>
@@ -44,7 +44,17 @@
           <td>{{ equipo.serie }}</td>
           <td>{{ equipo.razon_social_cliente }}</td>
           <td>{{ equipo.ciudad }}</td>
-          <td><a href="{% url 'equipo_qr_download' equipo.pk %}">Descargar</a></td>
+          <td>
+            <div style="display: flex; gap: 8px; align-items: center;">
+              <a href="{% url 'equipo_qr_download' equipo.pk %}" style="color: var(--text-primary); font-size: 13px;">QR</a>
+              {% if puede_editar_equipos %}
+                <a href="{% url 'equipo_update' equipo.pk %}" style="color: var(--accent-primary); font-size: 13px;">Editar</a>
+              {% endif %}
+              {% if puede_eliminar %}
+                <a href="{% url 'equipo_delete' equipo.pk %}" style="color: var(--accent-danger); font-size: 13px;">Eliminar</a>
+              {% endif %}
+            </div>
+          </td>
         </tr>
       {% empty %}
         <tr><td colspan="6" class="empty">No hay equipos con ese filtro.</td></tr>
