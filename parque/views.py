@@ -169,9 +169,16 @@ def public_report(request, public_id):
             ticket = form.save(commit=False)
             ticket.equipo = equipo
             ticket.save()
-            return render(request, 'parque/report_success.html', {'ticket': ticket, 'equipo': equipo})
+            request.session['last_ticket_pk'] = ticket.pk
+            return redirect('public_report_success', public_id=equipo.public_id)
     else:
         form = ReportePublicoForm()
     return render(request, 'parque/public_report.html', {'equipo': equipo, 'form': form})
 
-# Create your views here.
+def public_report_success(request, public_id):
+    equipo = get_object_or_404(Equipo, public_id=public_id)
+    ticket_pk = request.session.get('last_ticket_pk')
+    if not ticket_pk:
+        return redirect('public_report', public_id=public_id)
+    ticket = get_object_or_404(TicketSoporte, pk=ticket_pk, equipo=equipo)
+    return render(request, 'parque/report_success.html', {'ticket': ticket, 'equipo': equipo})
