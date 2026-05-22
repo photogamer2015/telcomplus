@@ -166,6 +166,23 @@ def public_report(request, public_id):
     if request.method == 'POST':
         form = ReportePublicoForm(request.POST)
         if form.is_valid():
+            import datetime
+            from django.utils import timezone
+            
+            time_threshold = timezone.now() - datetime.timedelta(minutes=5)
+            duplicate = TicketSoporte.objects.filter(
+                equipo=equipo,
+                nombre_cliente=form.cleaned_data['nombre_cliente'],
+                telefono=form.cleaned_data['telefono'],
+                empresa=form.cleaned_data['empresa'],
+                problema=form.cleaned_data['problema'],
+                creado_en__gte=time_threshold
+            ).first()
+            
+            if duplicate:
+                request.session['last_ticket_pk'] = duplicate.pk
+                return redirect('public_report_success', public_id=equipo.public_id)
+
             ticket = form.save(commit=False)
             ticket.equipo = equipo
             ticket.save()

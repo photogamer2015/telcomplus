@@ -32,7 +32,14 @@
           {{ field.errors }}
         </label>
       {% endfor %}
-      <button class="primary-button" type="submit">Enviar reporte</button>
+      
+      <script>
+        window.addEventListener('pageshow', function() {
+            var btn = document.getElementById('submit-btn');
+            if (btn) { btn.disabled = false; btn.innerText = 'Enviar reporte'; btn.style.opacity = '1'; }
+        });
+      </script>
+      <button id="submit-btn" class="primary-button" type="submit" onclick="if(this.form.checkValidity()){ this.innerText='Enviando...'; this.style.opacity='0.7'; setTimeout(() => this.disabled=true, 10); }">Enviar reporte</button>
     </form>
   </div>
 </section>
