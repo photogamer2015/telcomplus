@@ -254,3 +254,36 @@ def public_report_success(request, public_id):
         return redirect('public_report', public_id=public_id)
     ticket = get_object_or_404(TicketSoporte, pk=ticket_pk, equipo=equipo)
     return render(request, 'parque/report_success.html', {'ticket': ticket, 'equipo': equipo})
+
+
+@login_required
+def reset_ticket_ids(request):
+    if not request.user.is_superuser:
+        from django.core.exceptions import PermissionDenied
+        raise PermissionDenied
+        
+    from django.db import connection
+    
+    if request.method == 'POST':
+        # Re-enumerar tickets
+        tickets = list(TicketSoporte.objects.all().order_by('id'))
+        for i, t in enumerate(tickets, start=1):
+            if t.id != i:
+                TicketSoporte.objects.filter(id=t.id).update(id=i)
+                
+        max_id = len(tickets)
+        
+        # Reiniciar secuencias (Soporta PostgreSQL y SQLite)
+        with connection.cursor() as cursor:
+            try:
+                cursor.execute(f"ALTER SEQUENCE parque_ticketsoporte_id_seq RESTART WITH {max_id + 1};")
+            except Exception:
+                pass
+            try:
+                cursor.execute("DELETE FROM sqlite_sequence WHERE name='parque_ticketsoporte'")
+            except Exception:
+                pass
+                
+        messages.success(request, f"¡IDs de tickets reordenados! El próximo ticket será el #{max_id + 1}.")
+    
+    return redirect('ticket_list')

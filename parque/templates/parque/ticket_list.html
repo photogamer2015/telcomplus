@@ -8,6 +8,14 @@
     <p class="eyebrow">Soporte</p>
     <h1>Reportes recibidos</h1>
   </div>
+  {% if puede_eliminar %}
+    <div class="button-row">
+      <form method="post" action="{% url 'reset_ticket_ids' %}" style="margin: 0;" onsubmit="return confirm('¿Estás seguro de reordenar todos los IDs desde el 1?');">
+        {% csrf_token %}
+        <button type="submit" class="secondary-button" style="border-color: rgba(14, 165, 233, 0.3); color: var(--accent-primary);">Reordenar IDs (Admin)</button>
+      </form>
+    </div>
+  {% endif %}
 </header>
 
 <form class="filter-bar" method="get">
