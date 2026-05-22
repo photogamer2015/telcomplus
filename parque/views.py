@@ -134,6 +134,16 @@ def equipo_qr_download(request, pk):
 
 @login_required
 def ticket_list(request):
+    if request.method == 'POST':
+        ticket_id = request.POST.get('ticket_id')
+        nuevo_estado = request.POST.get('nuevo_estado')
+        if ticket_id and nuevo_estado:
+            ticket = get_object_or_404(TicketSoporte, pk=ticket_id)
+            ticket.estado = nuevo_estado
+            ticket.save()
+            messages.success(request, f'Estado del ticket #{ticket.pk} actualizado a {ticket.get_estado_display()}.')
+        return redirect(request.META.get('HTTP_REFERER', 'ticket_list'))
+
     estado = request.GET.get('estado', '').strip()
     tickets = TicketSoporte.objects.select_related('equipo')
     if estado:
