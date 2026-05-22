@@ -13,6 +13,9 @@
       <a class="secondary-button" href="{% url 'equipo_update' equipo.pk %}">Editar</a>
     {% endif %}
     <a class="primary-button" href="{% url 'equipo_qr_download' equipo.pk %}">Descargar QR</a>
+    {% if puede_eliminar %}
+      <a href="{% url 'equipo_delete' equipo.pk %}" class="secondary-button" style="color: var(--accent-danger); border-color: rgba(239, 68, 68, 0.3);">Eliminar</a>
+    {% endif %}
   </div>
 </header>
 

@@ -40,6 +40,7 @@
           <td>{{ ticket.telefono }}</td>
           <td>{{ ticket.equipo.serie }}</td>
           <td>
+            {% if puede_modificar_tickets %}
             <form method="post" style="margin: 0; display: inline-block;">
               {% csrf_token %}
               <input type="hidden" name="ticket_id" value="{{ ticket.pk }}">
@@ -49,6 +50,9 @@
                 {% endfor %}
               </select>
             </form>
+            {% else %}
+            <span class="pill">{{ ticket.get_estado_display }}</span>
+            {% endif %}
           </td>
           <td>{{ ticket.creado_en|date:'d/m/Y H:i' }}</td>
         </tr>

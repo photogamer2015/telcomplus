@@ -8,6 +8,11 @@
     <p class="eyebrow">Ticket #{{ ticket.pk }}</p>
     <h1>{{ ticket.nombre_cliente }}</h1>
   </div>
+  {% if puede_eliminar %}
+  <div class="button-row">
+    <a href="{% url 'ticket_delete' ticket.pk %}" class="secondary-button" style="color: var(--accent-danger); border-color: rgba(239, 68, 68, 0.3);">Eliminar</a>
+  </div>
+  {% endif %}
 </header>
 
 <section class="detail-layout">
@@ -22,11 +27,15 @@
   </div>
   <aside class="panel">
     <h2>Gestion interna</h2>
+    {% if puede_modificar_tickets %}
     <form method="post" class="form-stack">
       {% csrf_token %}
       {{ form.as_p }}
       <button class="primary-button" type="submit">Actualizar estado</button>
     </form>
+    {% else %}
+    <p>Estado actual: <span class="pill">{{ ticket.get_estado_display }}</span></p>
+    {% endif %}
   </aside>
 </section>
 {% endblock %}

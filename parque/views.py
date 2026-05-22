@@ -14,8 +14,20 @@ def _base_url(request):
     return request.build_absolute_uri('/').rstrip('/')
 
 
+def _es_admin(user):
+    return user.is_superuser or user.groups.filter(name='Admin').exists()
+
+
+def _puede_eliminar(user):
+    return _es_admin(user)
+
+
 def _puede_editar_equipos(user):
-    return user.is_superuser or user.groups.filter(name__in=['Admin', 'Admin de contrato']).exists()
+    return _es_admin(user) or user.groups.filter(name='Admin de contrato').exists()
+
+
+def _puede_modificar_tickets(user):
+    return _es_admin(user) or user.groups.filter(name='Tecnico').exists()
 
 
 def _rol_usuario(user):
@@ -29,6 +41,8 @@ def _contexto_panel(request, extra=None):
     context = {
         'rol_usuario': _rol_usuario(request.user),
         'puede_editar_equipos': _puede_editar_equipos(request.user),
+        'puede_eliminar': _puede_eliminar(request.user),
+        'puede_modificar_tickets': _puede_modificar_tickets(request.user),
     }
     if extra:
         context.update(extra)
@@ -135,6 +149,8 @@ def equipo_qr_download(request, pk):
 @login_required
 def ticket_list(request):
     if request.method == 'POST':
+        if not _puede_modificar_tickets(request.user):
+            raise PermissionDenied
         ticket_id = request.POST.get('ticket_id')
         nuevo_estado = request.POST.get('nuevo_estado')
         if ticket_id and nuevo_estado:
@@ -160,6 +176,8 @@ def ticket_list(request):
 def ticket_detail(request, pk):
     ticket = get_object_or_404(TicketSoporte.objects.select_related('equipo'), pk=pk)
     if request.method == 'POST':
+        if not _puede_modificar_tickets(request.user):
+            raise PermissionDenied
         form = EstadoTicketForm(request.POST, instance=ticket)
         if form.is_valid():
             form.save()
@@ -169,6 +187,32 @@ def ticket_detail(request, pk):
         form = EstadoTicketForm(instance=ticket)
     context = _contexto_panel(request, {'ticket': ticket, 'form': form})
     return render(request, 'parque/ticket_detail.html', context)
+
+
+@login_required
+def equipo_delete(request, pk):
+    if not _puede_eliminar(request.user):
+        raise PermissionDenied
+    equipo = get_object_or_404(Equipo, pk=pk)
+    if request.method == 'POST':
+        equipo.delete()
+        messages.success(request, 'Equipo eliminado correctamente.')
+        return redirect('equipo_list')
+    context = _contexto_panel(request, {'equipo': equipo, 'titulo': 'Eliminar equipo'})
+    return render(request, 'parque/equipo_confirm_delete.html', context)
+
+
+@login_required
+def ticket_delete(request, pk):
+    if not _puede_eliminar(request.user):
+        raise PermissionDenied
+    ticket = get_object_or_404(TicketSoporte, pk=pk)
+    if request.method == 'POST':
+        ticket.delete()
+        messages.success(request, 'Reporte eliminado correctamente.')
+        return redirect('ticket_list')
+    context = _contexto_panel(request, {'ticket': ticket, 'titulo': 'Eliminar reporte'})
+    return render(request, 'parque/ticket_confirm_delete.html', context)
 
 
 def public_report(request, public_id):
