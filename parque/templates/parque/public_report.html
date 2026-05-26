@@ -20,6 +20,20 @@
         <div><dt>Area</dt><dd>{{ equipo.area_departamento }}</dd></div>
       </dl>
     </aside>
+    {% if ticket_activo %}
+    <div class="panel form-stack report-form" style="text-align: center; padding: 3rem 2rem;">
+      <div style="color: var(--danger, #e74c3c); margin-bottom: 1rem;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+      </div>
+      <h2 style="color: var(--danger, #e74c3c); margin-bottom: 1rem;">Reporte en curso</h2>
+      <p style="font-size: 1.1rem; font-weight: 500; line-height: 1.5; color: var(--text-primary);">
+        QUEDA PENDIENTE DE ARREGLO, AUN NO SE PUEDE GENERAR MAS QR HASTA SOLUCIONAR ESE QR Y ASI.
+      </p>
+      <p style="margin-top: 1.5rem; color: var(--text-secondary); font-size: 0.95rem;">
+        Estado actual: <strong>{{ ticket_activo.get_estado_display }}</strong>
+      </p>
+    </div>
+    {% else %}
     <form method="post" class="panel form-stack report-form">
       {% csrf_token %}
       <h2>Reportar problema</h2>
@@ -41,6 +55,7 @@
       </script>
       <button id="submit-btn" class="primary-button" type="submit" onclick="if(this.form.checkValidity()){ this.innerText='Enviando...'; this.style.opacity='0.7'; setTimeout(() => this.disabled=true, 10); }">Enviar reporte</button>
     </form>
+    {% endif %}
   </div>
 </section>
 {% endblock %}

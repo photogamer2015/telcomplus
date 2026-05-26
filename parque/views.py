@@ -218,6 +218,16 @@ def ticket_delete(request, pk):
 
 def public_report(request, public_id):
     equipo = get_object_or_404(Equipo, public_id=public_id)
+    
+    # Check if there is an active ticket for this equipment
+    ticket_activo = TicketSoporte.objects.filter(
+        equipo=equipo,
+        estado__in=[TicketSoporte.NUEVO, TicketSoporte.EN_REVISION]
+    ).first()
+
+    if ticket_activo:
+        return render(request, 'parque/public_report.html', {'equipo': equipo, 'ticket_activo': ticket_activo})
+
     if request.method == 'POST':
         form = ReportePublicoForm(request.POST)
         if form.is_valid():
