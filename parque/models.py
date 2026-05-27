@@ -62,8 +62,8 @@ class TicketSoporte(models.Model):
     RESUELTO = 'RESUELTO'
 
     ESTADO_CHOICES = [
-        (NUEVO, 'Nuevo'),
-        (EN_REVISION, 'En revision'),
+        (NUEVO, 'En Proceso'),
+        (EN_REVISION, 'En Reparación'),
         (RESUELTO, 'Resuelto'),
     ]
 
